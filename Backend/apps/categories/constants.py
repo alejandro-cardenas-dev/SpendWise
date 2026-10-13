@@ -1,0 +1,15 @@
+DEFAULT_CATEGORIES = [
+    ("Food", "🍔", "expense"),
+    ("Transport", "🚌", "expense"),
+    ("Rent", "🏠", "expense"),
+    ("Utilities", "💡", "expense"),
+    ("Health", "💊", "expense"),
+    ("Entertainment", "🎬", "expense"),
+    ("Shopping", "🛍️", "expense"),
+    ("Education", "📚", "expense"),
+    ("Other", "📦", "expense"),
+    ("Salary", "💰", "income"),
+    ("Freelance", "💻", "income"),
+    ("Investments", "📈", "income"),
+    ("Other income", "🎁", "income"),
+]
