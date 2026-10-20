@@ -1,25 +1,56 @@
-// Shared Tailwind classes so every form looks the same
-export const inputClass =
-  "w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm " +
-  "focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200";
+"use client";
 
-export const buttonClass =
-  "w-full rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white " +
-  "hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-// Label + input slot + error message
-export default function FormField({ label, htmlFor, error, children }) {
+import { useAuth } from "@/context/AuthContext";
+
+// Phase 6 adds the notifications bell next to the logout button
+const LINKS = [
+  { href: "/dashboard", label: "Dashboard" },
+  { href: "/transactions", label: "Transactions" },
+  { href: "/categories", label: "Categories" },
+];
+
+export default function Navbar() {
+  const { user, logout } = useAuth();
+  const pathname = usePathname();
+
   return (
-    <div className="space-y-1">
-      <label htmlFor={htmlFor} className="block text-sm font-medium text-gray-700">
-        {label}
-      </label>
-      {children}
-      {error && (
-        <p role="alert" className="text-sm text-red-600">
-          {error}
-        </p>
-      )}
-    </div>
+    <header className="border-b border-gray-200 bg-white">
+      <nav className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3">
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+          <Link href="/dashboard" className="text-lg font-bold text-emerald-700">
+            💸 SpendWise
+          </Link>
+          <ul className="flex gap-4 text-sm">
+            {LINKS.map(({ href, label }) => (
+              <li key={href}>
+                <Link
+                  href={href}
+                  className={
+                    pathname.startsWith(href)
+                      ? "font-semibold text-emerald-700"
+                      : "text-gray-600 hover:text-gray-900"
+                  }
+                >
+                  {label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="flex items-center gap-3 text-sm">
+          <span className="hidden text-gray-500 sm:inline">{user?.email}</span>
+          <button
+            onClick={logout}
+            className="rounded-lg border border-gray-300 px-3 py-1.5 text-gray-700 hover:bg-gray-100"
+          >
+            Log out
+          </button>
+        </div>
+      </nav>
+    </header>
   );
 }
