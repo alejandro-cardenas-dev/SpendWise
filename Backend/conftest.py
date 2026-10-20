@@ -89,3 +89,28 @@ def create_transaction(db):
         )
 
     return _create
+
+
+@pytest.fixture
+def budget_category(user, create_category):
+    """Expense category with a monthly limit of 100.00."""
+    return create_category(
+        user, name="Dining out", emoji="🍽️", monthly_limit=Decimal("100.00")
+    )
+
+
+@pytest.fixture
+def create_notification(db):
+    from apps.notifications.models import Notification
+
+    def _create(user, category, type="warning", month=None, **extra):
+        extra.setdefault("message", "Test message")
+        return Notification.objects.create(
+            user=user,
+            category=category,
+            type=type,
+            month=month or datetime.date(2026, 1, 1),
+            **extra,
+        )
+
+    return _create
