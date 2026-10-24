@@ -114,3 +114,10 @@ def create_notification(db):
         )
 
     return _create
+
+
+@pytest.fixture(autouse=True)
+def fast_password_hasher(settings):
+    """Tests don't need secure hashing; this makes user creation much faster.
+    Only affects the test run, never the real app."""
+    settings.PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
