@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import FormField, { buttonClass, inputClass } from "@/components/FormField";
 import { useAuth } from "@/context/AuthContext";
 import { applyFieldErrors, getErrorMessage } from "@/lib/errors";
+import PasswordInput from "@/components/PasswordInput";
 
 export default function RegisterPage() {
   const { register: registerUser } = useAuth();
@@ -67,11 +68,9 @@ export default function RegisterPage() {
       </FormField>
 
       <FormField label="Password" htmlFor="password" error={errors.password?.message}>
-        <input
+        <PasswordInput
           id="password"
-          type="password"
           autoComplete="new-password"
-          className={inputClass}
           {...register("password", {
             required: "Password is required.",
             minLength: { value: 8, message: "Use at least 8 characters." },
@@ -80,11 +79,9 @@ export default function RegisterPage() {
       </FormField>
 
       <FormField label="Confirm password" htmlFor="confirmPassword" error={errors.confirmPassword?.message}>
-        <input
+        <PasswordInput
           id="confirmPassword"
-          type="password"
           autoComplete="new-password"
-          className={inputClass}
           {...register("confirmPassword", {
             required: "Please repeat your password.",
             validate: (value) =>

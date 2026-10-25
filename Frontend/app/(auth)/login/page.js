@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import FormField, { buttonClass, inputClass } from "@/components/FormField";
 import { useAuth } from "@/context/AuthContext";
 import { getErrorMessage } from "@/lib/errors";
+import PasswordInput from "@/components/PasswordInput";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -55,11 +56,9 @@ export default function LoginPage() {
       </FormField>
 
       <FormField label="Password" htmlFor="password" error={errors.password?.message}>
-        <input
+        <PasswordInput
           id="password"
-          type="password"
           autoComplete="current-password"
-          className={inputClass}
           {...register("password", { required: "Password is required." })}
         />
       </FormField>
