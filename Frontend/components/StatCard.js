@@ -1,17 +1,23 @@
 const TONES = {
-  neutral: "text-gray-900",
-  positive: "text-emerald-600",
-  negative: "text-red-600",
+  income: "bg-emerald-100 text-emerald-600",
+  expense: "bg-rose-100 text-rose-600",
+  neutral: "bg-violet-100 text-violet-600",
 };
 
+// `icon` is a React node, for example <FiArrowDownLeft />
 export default function StatCard({ label, value, tone = "neutral", icon }) {
   return (
-    <div className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
-      <p className="flex items-center gap-2 text-sm text-gray-500">
-        <span aria-hidden="true">{icon}</span>
-        {label}
-      </p>
-      <p className={`mt-1 text-2xl font-semibold ${TONES[tone]}`}>{value}</p>
+    <div className="flex items-center gap-4 rounded-3xl bg-white/80 p-4 shadow-sm shadow-violet-200/40 ring-1 ring-violet-100 backdrop-blur">
+      <span
+        aria-hidden="true"
+        className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-xl ${TONES[tone]}`}
+      >
+        {icon}
+      </span>
+      <div className="min-w-0">
+        <p className="text-sm text-gray-500">{label}</p>
+        <p className="truncate text-xl font-semibold text-slate-900">{value}</p>
+      </div>
     </div>
   );
 }

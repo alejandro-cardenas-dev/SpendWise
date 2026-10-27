@@ -70,8 +70,8 @@ export default function NotificationsPage() {
             onClick={() => changeTab(value)}
             className={`rounded-full px-4 py-1.5 text-sm font-medium ${
               tab === value
-                ? "bg-emerald-600 text-white"
-                : "bg-white text-gray-600 ring-1 ring-gray-200 hover:bg-gray-50"
+                ? "bg-violet-600 text-white"
+                : "bg-white text-gray-600 ring-1 ring-violet-100 hover:bg-gray-50"
             }`}
           >
             {label}
@@ -105,7 +105,7 @@ export default function NotificationsPage() {
       {results.length > 0 && (
         <>
           <ul
-            className={`divide-y divide-gray-100 overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200 transition-opacity ${
+            className={`divide-y divide-gray-100 overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-violet-100 transition-opacity ${
               isPlaceholderData ? "opacity-60" : ""
             }`}
           >

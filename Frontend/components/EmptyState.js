@@ -1,6 +1,6 @@
 export default function EmptyState({ icon = "📭", title, description, action }) {
   return (
-    <div className="rounded-xl border border-dashed border-gray-300 bg-white px-6 py-12 text-center">
+    <div className="rounded-2xl border border-dashed border-gray-300 bg-white px-6 py-12 text-center">
       <p className="text-4xl" aria-hidden="true">
         {icon}
       </p>

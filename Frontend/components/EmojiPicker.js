@@ -43,7 +43,7 @@ export default function EmojiPicker({ id, value, onChange }) {
                 setOpen(false);
               }}
               className={`rounded p-1 text-xl hover:bg-gray-100 ${
-                emoji === value ? "bg-emerald-100" : ""
+                emoji === value ? "bg-violet-100" : ""
               }`}
             >
               {emoji}

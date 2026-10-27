@@ -27,7 +27,7 @@ export default function MonthPicker({ month, onChange }) {
         <button
           type="button"
           onClick={() => onChange(currentMonth())}
-          className="text-sm font-medium text-emerald-700 hover:underline"
+          className="text-sm font-medium text-violet-700 hover:underline"
         >
           This month
         </button>

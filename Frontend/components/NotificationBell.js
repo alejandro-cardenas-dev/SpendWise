@@ -78,7 +78,7 @@ export default function NotificationBell() {
       </button>
 
       {open && (
-        <div className="absolute inset-x-4 z-50 mt-2 overflow-hidden rounded-xl bg-white shadow-lg ring-1 ring-gray-200 sm:inset-x-auto sm:right-0 sm:w-96">
+        <div className="absolute inset-x-4 z-50 mt-2 overflow-hidden rounded-2xl bg-white shadow-lg ring-1 ring-violet-100 sm:inset-x-auto sm:right-0 sm:w-96">
           <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
             <h2 className="text-sm font-semibold">Notifications</h2>
             {unread > 0 && (
@@ -125,7 +125,7 @@ export default function NotificationBell() {
           <Link
             href="/notifications"
             onClick={() => setOpen(false)}
-            className="block border-t border-gray-100 px-4 py-2.5 text-center text-sm font-medium text-emerald-700 hover:bg-gray-50"
+            className="block border-t border-gray-100 px-4 py-2.5 text-center text-sm font-medium text-violet-700 hover:bg-gray-50"
           >
             View all notifications
           </Link>

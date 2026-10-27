@@ -1,1 +1,11 @@
 @import "tailwindcss";
+
+/* Soft lavender background, like the reference mockups */
+body {
+  background-color: #f5f3ff;
+  background-image:
+    radial-gradient(60rem 40rem at 10% -10%, #ddd6fe 0%, transparent 60%),
+    radial-gradient(50rem 40rem at 100% 10%, #fbcfe8 0%, transparent 55%),
+    radial-gradient(60rem 50rem at 50% 110%, #c7d2fe 0%, transparent 60%);
+  background-attachment: fixed;
+}

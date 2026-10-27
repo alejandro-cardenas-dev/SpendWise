@@ -14,7 +14,7 @@ export default function NotificationItem({ notification, onRead }) {
           if (!is_read) onRead(id);
         }}
         className={`flex w-full items-start gap-3 p-3 text-left hover:bg-gray-50 ${
-          is_read ? "cursor-default" : "bg-emerald-50/60"
+          is_read ? "cursor-default" : "bg-violet-50/60"
         }`}
       >
         <span className="text-xl" aria-hidden="true">
@@ -32,7 +32,7 @@ export default function NotificationItem({ notification, onRead }) {
           <span
             role="img"
             aria-label="Unread"
-            className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-emerald-500"
+            className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-violet-500"
           />
         )}
       </button>

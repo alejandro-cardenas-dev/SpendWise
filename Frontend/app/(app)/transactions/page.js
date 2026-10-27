@@ -1,19 +1,22 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { FiEdit2, FiTrash2 } from "react-icons/fi";
 
 import CategoryBadge from "@/components/CategoryBadge";
+import CategoryIcon from "@/components/CategoryIcon";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import EmptyState from "@/components/EmptyState";
 import ErrorState from "@/components/ErrorState";
 import {
   inputClass,
-  linkButtonClass,
   primaryButtonClass,
   secondaryButtonClass,
 } from "@/components/FormField";
+import IconButton from "@/components/IconButton";
 import Modal from "@/components/Modal";
 import Pagination from "@/components/Pagination";
+import SegmentedControl from "@/components/SegmentedControl";
 import { Spinner } from "@/components/Spinner";
 import TransactionForm from "@/components/TransactionForm";
 import { useCategories } from "@/hooks/useCategories";
@@ -30,6 +33,12 @@ const EMPTY_FILTERS = {
   date_to: "",
   ordering: "-date",
 };
+
+const TYPE_OPTIONS = [
+  { value: "", label: "All" },
+  { value: "expense", label: "Expenses" },
+  { value: "income", label: "Income" },
+];
 
 function Filter({ label, htmlFor, className = "", children }) {
   return (
@@ -119,7 +128,7 @@ export default function TransactionsPage() {
       </div>
 
       {/* Filters */}
-      <div className="grid gap-3 rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 rounded-2xl bg-white/80 p-4 shadow-sm ring-1 ring-violet-100 sm:grid-cols-2 lg:grid-cols-4">
         <Filter label="Search" htmlFor="f-search" className="lg:col-span-2">
           <input
             id="f-search"
@@ -131,16 +140,12 @@ export default function TransactionsPage() {
           />
         </Filter>
         <Filter label="Type" htmlFor="f-type">
-          <select
-            id="f-type"
+          <SegmentedControl
+            label="Type"
             value={filters.type}
-            onChange={(event) => setFilter("type", event.target.value)}
-            className={inputClass}
-          >
-            <option value="">All types</option>
-            <option value="expense">Expenses</option>
-            <option value="income">Income</option>
-          </select>
+            onChange={(value) => setFilter("type", value)}
+            options={TYPE_OPTIONS}
+          />
         </Filter>
         <Filter label="Category" htmlFor="f-category">
           <select
@@ -230,18 +235,19 @@ export default function TransactionsPage() {
       {transactions.length > 0 && (
         <>
           <ul
-            className={`divide-y divide-gray-100 rounded-xl bg-white shadow-sm ring-1 ring-gray-200 transition-opacity ${
+            className={`divide-y divide-violet-50 rounded-2xl bg-white/80 shadow-sm ring-1 ring-violet-100 transition-opacity ${
               isPlaceholderData ? "opacity-60" : ""
             }`}
           >
             {transactions.map((t) => (
-              <li key={t.id} className="flex items-center justify-between gap-3 p-4">
-                <div className="min-w-0 space-y-1">
+              <li key={t.id} className="flex items-center gap-3 p-4">
+                <CategoryIcon category={t.category_detail} />
+                <div className="min-w-0 flex-1 space-y-1">
                   <p className="truncate font-medium">
                     {t.description || t.category_detail.name}
                   </p>
                   <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500">
-                    <CategoryBadge category={t.category_detail} />
+                    <CategoryBadge category={t.category_detail} showEmoji={false} />
                     <span>{formatDate(t.date)}</span>
                   </div>
                 </div>
@@ -249,27 +255,26 @@ export default function TransactionsPage() {
                 <div className="flex shrink-0 flex-col items-end gap-1">
                   <p
                     className={`font-semibold ${
-                      t.type === "income" ? "text-emerald-600" : "text-gray-900"
+                      t.type === "income" ? "text-emerald-600" : "text-rose-600"
                     }`}
                   >
                     {t.type === "income" ? "+" : "−"}
                     {formatMoney(t.amount)}
                   </p>
-                  <div className="flex gap-3">
-                    <button
-                      type="button"
+                  <div className="flex">
+                    <IconButton
+                      label="Edit transaction"
                       onClick={() => setModal({ transaction: t })}
-                      className={linkButtonClass}
                     >
-                      Edit
-                    </button>
-                    <button
-                      type="button"
+                      <FiEdit2 className="h-4 w-4" />
+                    </IconButton>
+                    <IconButton
+                      label="Delete transaction"
+                      danger
                       onClick={() => setDeleting(t)}
-                      className={`${linkButtonClass} text-red-600`}
                     >
-                      Delete
-                    </button>
+                      <FiTrash2 className="h-4 w-4" />
+                    </IconButton>
                   </div>
                 </div>
               </li>

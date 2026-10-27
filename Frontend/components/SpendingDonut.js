@@ -2,66 +2,59 @@
 
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 
+import { getCategoryColor } from "@/lib/categoryColors";
 import { formatMoney } from "@/lib/format";
-
-const COLORS = [
-  "#10b981", "#3b82f6", "#f59e0b", "#ef4444", "#8b5cf6",
-  "#ec4899", "#14b8a6", "#f97316", "#6366f1", "#84cc16",
-];
 
 export default function SpendingDonut({ rows, total }) {
   // Number() is only for drawing; the exact amounts are shown from the API strings
   const data = rows.map((row) => ({
     name: `${row.emoji} ${row.name}`,
     value: Number(row.total),
+    color: getCategoryColor(row.category_id),
   }));
 
   return (
     <div className="grid items-center gap-4 sm:grid-cols-2">
       <div className="relative h-56">
-        {/* ResponsiveContainer fills its parent, so the parent needs a fixed height */}
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
               data={data}
               dataKey="value"
               nameKey="name"
-              innerRadius="60%"
-              outerRadius="90%"
-              paddingAngle={2}
+              innerRadius="62%"
+              outerRadius="92%"
+              paddingAngle={3}
+              cornerRadius={6}
               stroke="none"
             >
-              {data.map((entry, index) => (
-                <Cell key={entry.name} fill={COLORS[index % COLORS.length]} />
+              {data.map((entry) => (
+                <Cell key={entry.name} fill={entry.color} />
               ))}
             </Pie>
-            <Tooltip formatter={(value) => formatMoney(value)} />
+            <Tooltip
+              formatter={(value) => formatMoney(value)}
+              contentStyle={{ borderRadius: 12, border: "none", boxShadow: "0 4px 16px rgb(0 0 0 / 0.12)" }}
+            />
           </PieChart>
         </ResponsiveContainer>
 
-        {/* The hole of the donut */}
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
           <span className="text-xs text-gray-500">Total spent</span>
           <span className="text-lg font-semibold">{formatMoney(total)}</span>
         </div>
       </div>
 
-      {/* A plain-HTML legend: readable by screen readers and easy to style */}
       <ul className="space-y-2 text-sm">
-        {rows.map((row, index) => (
-          <li key={row.category_id} className="flex items-center justify-between gap-2">
+        {data.map((item, index) => (
+          <li key={rows[index].category_id} className="flex items-center justify-between gap-2">
             <span className="flex min-w-0 items-center gap-2">
-              <span
-                className="h-3 w-3 shrink-0 rounded-full"
-                style={{ backgroundColor: COLORS[index % COLORS.length] }}
-              />
-              <span className="truncate">
-                {row.emoji} {row.name}
-              </span>
+              <span className="h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: item.color }} />
+              <span className="truncate">{item.name}</span>
             </span>
             <span className="shrink-0 text-gray-600">
-              {formatMoney(row.total)}{" "}
-              <span className="text-xs text-gray-400">({row.percentage}%)</span>
+              {formatMoney(rows[index].total)}{" "}
+              <span className="text-xs text-gray-400">({rows[index].percentage}%)</span>
             </span>
           </li>
         ))}

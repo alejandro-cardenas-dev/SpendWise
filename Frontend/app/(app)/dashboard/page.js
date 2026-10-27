@@ -2,21 +2,27 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { FiArrowDownLeft, FiArrowUpRight } from "react-icons/fi";
 
+import BalanceCard from "@/components/BalanceCard";
 import BudgetProgress from "@/components/BudgetProgress";
 import Card from "@/components/Card";
 import ErrorState from "@/components/ErrorState";
+import Modal from "@/components/Modal";
 import MonthPicker from "@/components/MonthPicker";
 import RecentTransactions from "@/components/RecentTransactions";
 import { Spinner } from "@/components/Spinner";
 import SpendingDonut from "@/components/SpendingDonut";
 import StatCard from "@/components/StatCard";
+import TransactionForm from "@/components/TransactionForm";
 import TrendChart from "@/components/TrendChart";
 import { useAuth } from "@/context/AuthContext";
+import { useCategories } from "@/hooks/useCategories";
 import { useDashboard } from "@/hooks/useDashboard";
+import { useTransactionMutations } from "@/hooks/useTransactions";
 import { currentMonth, formatMoney } from "@/lib/format";
 
-const linkClass = "text-sm font-medium text-emerald-700 hover:underline";
+const linkClass = "text-sm font-medium text-violet-700 hover:underline";
 
 const Empty = ({ children }) => (
   <p className="py-10 text-center text-sm text-gray-500">{children}</p>
@@ -25,19 +31,32 @@ const Empty = ({ children }) => (
 export default function DashboardPage() {
   const { user } = useAuth();
   const [month, setMonth] = useState(currentMonth);
-  const { data, isPending, isError, isPlaceholderData, refetch } = useDashboard(month);
+  const [hidden, setHidden] = useState(false); // privacy: mask all amounts
+  const [adding, setAdding] = useState(false);
 
-  const balance = data ? Number(data.summary.balance) : 0;
-  const balanceTone = balance > 0 ? "positive" : balance < 0 ? "negative" : "neutral";
+  const { data, isPending, isError, isPlaceholderData, refetch } = useDashboard(month);
+  const { data: categories = [] } = useCategories();
+  const { create } = useTransactionMutations(); // also refreshes the dashboard
+
+  const name = user?.first_name || user?.email?.split("@")[0] || "there";
+  const show = (value) => (hidden ? "••••••" : formatMoney(value));
+
+  const handleAdd = async (payload) => {
+    await create.mutateAsync(payload);
+    setAdding(false);
+  };
 
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold">Dashboard</h1>
-          <p className="text-sm text-gray-500">
-            {user?.first_name ? `Hi ${user.first_name}, here` : "Here"} is your month at a glance.
-          </p>
+        <div className="flex items-center gap-3">
+          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-violet-600 text-lg font-bold uppercase text-white">
+            {name[0]}
+          </span>
+          <div>
+            <p className="text-sm text-gray-500">Welcome back</p>
+            <h1 className="text-xl font-bold">{name}</h1>
+          </div>
         </div>
         <MonthPicker month={month} onChange={setMonth} />
       </div>
@@ -48,31 +67,30 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {isError && (
-        <ErrorState message="Could not load the dashboard." onRetry={refetch} />
-      )}
+      {isError && <ErrorState message="Could not load the dashboard." onRetry={refetch} />}
 
       {data && (
-        <div
-          className={`space-y-6 transition-opacity ${isPlaceholderData ? "opacity-60" : ""}`}
-        >
-          <div className="grid gap-4 sm:grid-cols-3">
+        <div className={`space-y-6 transition-opacity ${isPlaceholderData ? "opacity-60" : ""}`}>
+          <BalanceCard
+            month={month}
+            balanceText={show(data.summary.balance)}
+            hidden={hidden}
+            onToggleHidden={() => setHidden((current) => !current)}
+            onAdd={() => setAdding(true)}
+          />
+
+          <div className="grid gap-4 sm:grid-cols-2">
             <StatCard
-              icon="📥"
               label="Income"
-              value={formatMoney(data.summary.total_income)}
-              tone="positive"
+              value={show(data.summary.total_income)}
+              tone="income"
+              icon={<FiArrowDownLeft />}
             />
             <StatCard
-              icon="📤"
               label="Expenses"
-              value={formatMoney(data.summary.total_expenses)}
-            />
-            <StatCard
-              icon="⚖️"
-              label="Balance"
-              value={formatMoney(data.summary.balance)}
-              tone={balanceTone}
+              value={show(data.summary.total_expenses)}
+              tone="expense"
+              icon={<FiArrowUpRight />}
             />
           </div>
 
@@ -83,7 +101,7 @@ export default function DashboardPage() {
               ) : (
                 <SpendingDonut
                   rows={data.spending_by_category}
-                  total={data.summary.total_expenses}
+                  total={hidden ? 0 : data.summary.total_expenses}
                 />
               )}
             </Card>
@@ -132,6 +150,16 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
+
+      <Modal open={adding} onClose={() => setAdding(false)} title="Add transaction">
+        {adding && (
+          <TransactionForm
+            categories={categories}
+            onSubmit={handleAdd}
+            onCancel={() => setAdding(false)}
+          />
+        )}
+      </Modal>
     </div>
   );
 }

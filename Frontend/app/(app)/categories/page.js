@@ -1,14 +1,18 @@
 "use client";
 
 import { useState } from "react";
+import { FiArchive, FiEdit2, FiRotateCcw, FiTrash2 } from "react-icons/fi";
 
 import CategoryForm from "@/components/CategoryForm";
+import CategoryIcon from "@/components/CategoryIcon";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import EmptyState from "@/components/EmptyState";
 import ErrorState from "@/components/ErrorState";
-import { linkButtonClass, primaryButtonClass } from "@/components/FormField";
+import IconButton from "@/components/IconButton";
+import { primaryButtonClass } from "@/components/FormField";
 import Modal from "@/components/Modal";
 import { Spinner } from "@/components/Spinner";
+
 import { useCategories, useCategoryMutations } from "@/hooks/useCategories";
 import { getErrorMessage } from "@/lib/errors";
 import { formatMoney } from "@/lib/format";
@@ -21,14 +25,12 @@ const SECTIONS = [
 function CategoryCard({ category, onEdit, onToggleArchive, onDelete }) {
   return (
     <li
-      className={`flex items-center justify-between gap-3 rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200 ${
+      className={`flex items-center justify-between gap-3 rounded-2xl bg-white/80 p-4 shadow-sm ring-1 ring-violet-100 ${
         category.is_archived ? "opacity-60" : ""
       }`}
     >
       <div className="flex min-w-0 items-center gap-3">
-        <span className="text-2xl" aria-hidden="true">
-          {category.emoji}
-        </span>
+        <CategoryIcon category={category} />
         <div className="min-w-0">
           <p className="truncate font-medium">
             {category.name}
@@ -48,16 +50,23 @@ function CategoryCard({ category, onEdit, onToggleArchive, onDelete }) {
         </div>
       </div>
 
-      <div className="flex shrink-0 gap-3">
-        <button type="button" onClick={onEdit} className={linkButtonClass}>
-          Edit
-        </button>
-        <button type="button" onClick={onToggleArchive} className={linkButtonClass}>
-          {category.is_archived ? "Restore" : "Archive"}
-        </button>
-        <button type="button" onClick={onDelete} className={`${linkButtonClass} text-red-600`}>
-          Delete
-        </button>
+      <div className="flex shrink-0">
+        <IconButton label="Edit category" onClick={onEdit}>
+          <FiEdit2 className="h-4 w-4" />
+        </IconButton>
+        <IconButton
+          label={category.is_archived ? "Restore category" : "Archive category"}
+          onClick={onToggleArchive}
+        >
+          {category.is_archived ? (
+            <FiRotateCcw className="h-4 w-4" />
+          ) : (
+            <FiArchive className="h-4 w-4" />
+          )}
+        </IconButton>
+        <IconButton label="Delete category" danger onClick={onDelete}>
+          <FiTrash2 className="h-4 w-4" />
+        </IconButton>
       </div>
     </li>
   );
