@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  /* config options here */
-  output: "standalone", // a small self-contained server, ideal for Docker
+  // Standalone output is for the Docker image; Vercel builds Next.js its own way
+  output: process.env.VERCEL ? undefined : "standalone",
   cacheComponents: true,
   partialPrefetching: true,
   experimental: {
